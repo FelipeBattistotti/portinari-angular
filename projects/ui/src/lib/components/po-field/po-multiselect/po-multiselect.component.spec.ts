@@ -10,6 +10,7 @@ import { PoMultiselectBaseComponent } from '../po-multiselect/po-multiselect-bas
 import { PoMultiselectComponent } from './po-multiselect.component';
 import { PoMultiselectDropdownComponent } from './po-multiselect-dropdown/po-multiselect-dropdown.component';
 import { PoMultiselectItemComponent } from './po-multiselect-item/po-multiselect-item.component';
+import { PoMultiselectOption } from './po-multiselect-option.interface';
 import { PoMultiselectSearchComponent } from './po-multiselect-search/po-multiselect-search.component';
 
 describe('PoMultiselectComponent:', () => {
@@ -255,6 +256,22 @@ describe('PoMultiselectComponent:', () => {
   });
 
   describe('Methods:', () => {
+
+    fit('ngDoCheck: should call `validAndSortOptions`', () => {
+      component.options = [{label: 'teste1', value: 1}, {label: 'teste2', value: 2}, {label: 'teste1', value: 1}];
+      // tslint:disable-next-line:max-line-length
+      const fakeOptions: Array<PoMultiselectOption> = [{label: 'teste2', value: 2}, {label: 'teste1', value: 1}, {label: 'teste3', value: 3}];
+      fakeOptions.forEach(fakeOption => component.options.push(fakeOption));
+
+      const expectedValue = [{label: 'teste1', value: 1},  {label: 'teste2', value: 2}, {label: 'teste3', value: 3}];
+
+      spyOn(component, 'validAndSortOptions');
+
+      component.ngDoCheck();
+
+      expect(component.validAndSortOptions).toHaveBeenCalledTimes(1);
+      expect(component.options).toBe(expectedValue);
+    });
 
     it('ngDoCheck: should call debounceResize', () => {
       const fakeThis = {

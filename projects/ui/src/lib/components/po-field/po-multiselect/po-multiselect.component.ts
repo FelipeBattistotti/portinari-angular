@@ -88,6 +88,7 @@ export class PoMultiselectComponent extends PoMultiselectBaseComponent implement
   }
 
   ngDoCheck() {
+    this.validAndSortOptions();
     const inputWidth = this.inputElement.nativeElement.offsetWidth;
     // Permite que os disclaimers sejam calculados na primeira vez que o componente torna-se visível,
     // evitando com isso, problemas com Tabs ou Divs que iniciem escondidas.
