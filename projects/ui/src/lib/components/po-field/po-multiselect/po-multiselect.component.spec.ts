@@ -10,7 +10,6 @@ import { PoMultiselectBaseComponent } from '../po-multiselect/po-multiselect-bas
 import { PoMultiselectComponent } from './po-multiselect.component';
 import { PoMultiselectDropdownComponent } from './po-multiselect-dropdown/po-multiselect-dropdown.component';
 import { PoMultiselectItemComponent } from './po-multiselect-item/po-multiselect-item.component';
-import { PoMultiselectOption } from './po-multiselect-option.interface';
 import { PoMultiselectSearchComponent } from './po-multiselect-search/po-multiselect-search.component';
 
 describe('PoMultiselectComponent:', () => {
@@ -257,20 +256,17 @@ describe('PoMultiselectComponent:', () => {
 
   describe('Methods:', () => {
 
-    fit('ngDoCheck: should call `validAndSortOptions`', () => {
+    it('ngDoCheck: should call `validAndSortOptions` and remove the duplicate options', () => {
       component.options = [{label: 'teste1', value: 1}, {label: 'teste2', value: 2}, {label: 'teste1', value: 1}];
-      // tslint:disable-next-line:max-line-length
-      const fakeOptions: Array<PoMultiselectOption> = [{label: 'teste2', value: 2}, {label: 'teste1', value: 1}, {label: 'teste3', value: 3}];
-      fakeOptions.forEach(fakeOption => component.options.push(fakeOption));
 
-      const expectedValue = [{label: 'teste1', value: 1},  {label: 'teste2', value: 2}, {label: 'teste3', value: 3}];
+      const expectedValue = [{label: 'teste1', value: 1}, {label: 'teste2', value: 2}];
 
       spyOn(component, 'validAndSortOptions');
 
       component.ngDoCheck();
 
-      expect(component.validAndSortOptions).toHaveBeenCalledTimes(1);
-      expect(component.options).toBe(expectedValue);
+      expect(component.validAndSortOptions).toHaveBeenCalled();
+      expect(component.options).toEqual(expectedValue);
     });
 
     it('ngDoCheck: should call debounceResize', () => {
@@ -283,7 +279,8 @@ describe('PoMultiselectComponent:', () => {
         visibleElement: false,
         initialized: true,
         isCalculateVisibleItems: true,
-        debounceResize: () => true
+        debounceResize: () => true,
+        validAndSortOptions: () => {}
       };
 
       spyOn(fakeThis, 'debounceResize');
@@ -304,7 +301,8 @@ describe('PoMultiselectComponent:', () => {
         visibleElement: false,
         initialized: true,
         isCalculateVisibleItems: true,
-        debounceResize: () => true
+        debounceResize: () => true,
+        validAndSortOptions: () => {}
       };
 
       spyOn(fakeThis, 'debounceResize');
@@ -325,7 +323,8 @@ describe('PoMultiselectComponent:', () => {
         visibleElement: false,
         initialized: true,
         isCalculateVisibleItems: false,
-        debounceResize: () => {}
+        debounceResize: () => {},
+        validAndSortOptions: () => {}
       };
 
       spyOn(fakeThis, 'debounceResize');
